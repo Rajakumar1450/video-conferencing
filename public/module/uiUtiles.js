@@ -6,10 +6,10 @@ const infoModalContainer = document.getElementById(
 );
 const closeModalButton = document.getElementById("close");
 const inputRoomNameElement = document.getElementById("input_room_channel_name");
-const joinRoomButton = document.getElementById("join_button");
 const createRoomButton = document.getElementById("create_room_button");
+const landingPageContainer = document.getElementById("landing_page_container");
+const joinRoomButton = document.getElementById("join_button");
 const roomNameHeadingTag = document.getElementById("room_name_heading_tag");
-const landingPage = document.getElementById("landing_page_container");
 const roomInterface = document.getElementById("room_interface");
 const messagesContainer = document.getElementById("messages");
 const messageInputField = document.getElementById("message_input_field");
@@ -70,7 +70,18 @@ const setupModelEvents = () => {
     }
   };
 };
-
+export const DOM = {
+  createRoomButton,
+  inputRoomNameElement,
+  destroyRoomButton,
+  joinRoomButton,
+  exitButton,
+};
+inputRoomNameElement.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    createRoomButton.click();
+  }
+});
 const openModel = () => {
   infoModalContainer.classList.add("show");
   infoModalContainer.classList.remove("hide");
@@ -81,6 +92,35 @@ const closeModel = () => {
   infoModalContainer.classList.remove("show");
 };
 
+export const creatorProceedToRoom = () => {
+  landingPageContainer.style.display = "none";
+  roomInterface.classList.remove("hide");
+  exitButton.classList.add("hide");
+  roomNameHeadingTag.textContent = `you are in the room : ${state.getState().roomName}  `;
+};
+export const exitRoom = () => {
+  inputRoomNameElement.value = "";
+  landingPageContainer.style.display = "block";
+  roomInterface.classList.add("hide");
+  //  reset the states
+  state.resetState();
+};
+export const joineeProceedToRoom = () => {
+  landingPageContainer.style.display = "none";
+  roomInterface.classList.remove("hide");
+  destroyRoomButton.classList.add("hide");
+  roomNameHeadingTag.textContent = `you are in the room : ${state.getState().roomName}  `;
+  messagesContainer.innerHTML = "pls wait ... connecting via WebRTC";
+};
+export const updateCreatorRoom = () => {
+  destroyRoomButton.classList.add("hide");
+  exitButton.classList.remove("hide");
+};
+export const updateUiForRemaningUser = (data) => {
+  alert(`user:${data.leftUserId} has left your Room`);
+  state.setOtheUserId(null);
+  messagesContainer.innerHTML = "Waiting for other user";
+};
 export const LogToCustomConsole = (
   message,
   color = "#FFFFFF",
@@ -100,8 +140,4 @@ export const LogToCustomConsole = (
   }
   consoleDisplay.appendChild(messageElement);
   consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
-};
-export const DOM = {
-  createRoomButton,
-  inputRoomNameElement,
 };

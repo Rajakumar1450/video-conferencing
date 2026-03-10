@@ -2,6 +2,8 @@
 let state = {
   userId: null,
   userWebSocketConnection: null,
+  roomName: null,
+  otherUserId: null,
 };
 
 // a generic setter fucntion for setting user Idx
@@ -20,7 +22,20 @@ export const setUserId = (userId) => {
 export const setwsConnection = (wsconnetion) => {
   setState({ userWebSocketConnection: wsconnetion });
 };
+export const setRoomName = (roomName) => {
+  setState({ roomName });
+};
+export const getState = () => {
+  return state;
+};
 
-export const getState = ()=>{
+export const setOtheUserId = (otherUserId) => {
+  setState({ otherUserId });
+};
 
-}
+export const resetState = () => {
+  setState({
+    roomName: null,
+    otherUserId: null,
+  });
+};
