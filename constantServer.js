@@ -13,6 +13,11 @@ export const type = {
     EXIT: "EXIT_ROOM_REQUEST",
     NOTIFY: "EXIT_ROOM_NOTIFY",
   },
+  WEB_RTC: {
+    OFFER: "OFFER",
+    ANSWER: "ANSWER",
+    ICE_CANDIDATE: "ICE_CANDIDATE",
+  },
 };
 export const label = {
   NORMAL_SERVER_PROCESS: "NORMAL_SERVER_PROCESS",

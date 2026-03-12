@@ -38,7 +38,29 @@ ol {
   width: 30%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+.video-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Dono boxes ke beech ka gap */
+  padding: 0 10px;
+  width: 100%;
+}
 
+.video-box {
+  flex: 1; /* Dono ko barabar width dene ke liye */
+  aspect-ratio: 16 / 9; /* Video ka standard size */
+  background-color: black;
+  border: 2px solid white;
+  max-width: 48%; /* Screen se bahar na jaye */
+}
+#local-video {
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+}
+#remote-video {
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+}
 button {
   padding: 10px;
   border: none;

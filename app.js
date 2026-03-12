@@ -153,6 +153,10 @@ const handlemessage = (data) => {
         console.log("=== normal server message ===");
         normalServerProcessing(message.data);
         break;
+      case constantServer.label.WEBRTC_SERVER_PROCESS:
+        console.log("=== WebRTC server message ===");
+        webRTCServerProcessing(message.data);
+        break;
       default:
         console.log("Unknown message label ", message.label);
     }
@@ -161,7 +165,7 @@ const handlemessage = (data) => {
   }
   return;
 };
-
+//normal sever Process
 const normalServerProcessing = (data) => {
   switch (data.type) {
     case constantServer.type.ROOM_JOIN.REQUEST:
@@ -174,7 +178,7 @@ const normalServerProcessing = (data) => {
       console.log("unknown data type..", data.type);
   }
 };
-
+//handling joing Room
 const joinRoomhandler = (data) => {
   const { roomName, userId } = data;
   let otherUserId = null;
@@ -276,6 +280,35 @@ const exitHanlder = (data) => {
   };
   sendWebSocketMessage(otherUserId, notifymessage);
   return;
+};
+
+//webRTC  process
+const webRTCServerProcessing = (data) => {
+  switch (data.type) {
+    case constantServer.type.WEB_RTC.OFFER:
+      signalMessageToOtherUser(data);
+      console.log(`offer is sent to user:${data.otherUserId} `);
+      break;
+    case constantServer.type.WEB_RTC.ANSWER:
+      signalMessageToOtherUser(data);
+      console.log(`Answer is sent to user:${data.otherUserId} `);
+      break;
+    case constantServer.type.WEB_RTC.ICE_CANDIDATE:
+      signalMessageToOtherUser(data);
+      console.log(`iceCandidates is sent to user:${data.otherUserId} `);
+      break;
+    default:
+      console.log("unknown data type..", data.type);
+  }
+};
+//one generic function to send the offer answer and iceCandidates
+const signalMessageToOtherUser = (data) => {
+  const { otherUserId } = data;
+  const message = {
+    label: constantServer.label.WEBRTC_SERVER_PROCESS,
+    data: data,
+  };
+  sendWebSocketMessage(otherUserId, message);
 };
 //sending a message to specifiec user
 const sendWebSocketMessage = (userId, message) => {

@@ -3,6 +3,8 @@ import * as ws from "./module/ws.js";
 import * as ajax from "./module/ajax.js";
 import * as state from "./module/state.js";
 import * as constant from "./module/constant.js";
+import * as webRTCHandler from "./module/webRTChandler.js";
+
 const userId = Math.round(Math.random() * 1000000);
 
 uiUtiles.initializeUser(userId);
@@ -45,4 +47,19 @@ uiUtiles.DOM.exitButton.addEventListener("click", () => {
   uiUtiles.exitRoom();
   ws.exitRoom(roomName, userId);
   uiUtiles.LogToCustomConsole("You Left The Room..", constant.colors.red);
+  //close the data channel and the peerConnection
+  webRTCHandler.closeConnection();
 });
+
+uiUtiles.DOM.sendMessageButton.addEventListener("click", () => {
+  const message = uiUtiles.DOM.messageInputField.value.trim();
+  if (message === "") {
+    return;
+  }
+  //update The Ui for the sending messages in the Interface of the sender user
+  uiUtiles.addOutgoingMessageUI(message);
+  //now send the message through the data channel that is created between the peers
+  webRTCHandler.sendMessageOnDataChannel(message);
+  //listen this message on the event on the datachannel when a message event occured on the data channel
+});
+

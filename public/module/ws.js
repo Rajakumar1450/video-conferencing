@@ -1,6 +1,7 @@
 import * as state from "./state.js";
 import * as uiUtiles from "./uiUtiles.js";
 import * as constants from "./constant.js";
+import * as webRTChandler from "./webRTChandler.js";
 export const registerSocketEvents = (wsClientConnection) => {
   //update our user State with this client ws connection
   state.setwsConnection(wsClientConnection);
@@ -45,7 +46,7 @@ export const joinRoom = (roomName, userId) => {
   };
   state.getState().userWebSocketConnection.send(JSON.stringify(message));
 };
-//exiting Room message to Websocket
+//exiting Room outgoing message to Websocket
 export const exitRoom = (roomName, userId) => {
   const message = {
     label: constants.label.NORMAL_SERVER_PROCESS,
@@ -57,12 +58,51 @@ export const exitRoom = (roomName, userId) => {
   };
   state.getState().userWebSocketConnection.send(JSON.stringify(message));
 };
+//outgoing send Offer
+export const sendOffer = (offer) => {
+  const message = {
+    label: constants.label.WEBRTC_SERVER_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.OFFER,
+      offer,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+};
+//out going send asnwer
+export const sendAnswer = (answer) => {
+  const message = {
+    label: constants.label.WEBRTC_SERVER_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.ANSWER,
+      answer,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+};
+// outgoing ice candidates
+export const sendIceCandidates = (iceCandidates) => {
+  const message = {
+    label: constants.label.WEBRTC_SERVER_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.ICE_CANDIDATE,
+      iceCandidates,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+};
 //HANDLING INCOMING MESSAGE FROM WEBSOCKET SERVER
 const handlemessage = (incomingMessageObj) => {
   const message = JSON.parse(incomingMessageObj.data);
   switch (message.label) {
     case constants.label.NORMAL_SERVER_PROCESS:
       normalServerProcessing(message.data);
+      break;
+    case constants.label.WEBRTC_SERVER_PROCESS:
+      webRTCServerProcessing(message.data);
       break;
     default:
       console.log("unknown Message Lable ", message.label);
@@ -98,6 +138,8 @@ const handleSuccessJoin = (data) => {
   state.setRoomName(data.roomName);
   uiUtiles.LogToCustomConsole(data.message, constants.colors.green);
   uiUtiles.joineeProceedToRoom();
+  // start webrtcProcess
+  webRTChandler.startWebRTCProcess();
 };
 
 const handleJoinNotify = (data) => {
@@ -109,4 +151,24 @@ const handleJoinNotify = (data) => {
 const handleExitNotify = (data) => {
   uiUtiles.LogToCustomConsole(data.message, constants.colors.red);
   uiUtiles.updateUiForRemaningUser(data);
+  //if a user exit the room the peerconnection also must be closed by the other user
+  webRTChandler.closeConnection();
+};
+
+// handling incoming messages for the webRTC server processes
+
+const webRTCServerProcessing = (data) => {
+  switch (data.type) {
+    case constants.type.WEB_RTC.OFFER:
+      webRTChandler.handleOffer(data);
+      break;
+    case constants.type.WEB_RTC.ANSWER:
+      webRTChandler.handleAnswer(data);
+      break;
+    case constants.type.WEB_RTC.ICE_CANDIDATE:
+      webRTChandler.handleIceCandidates(data);
+      break;
+    default:
+      console.log("Unknown Data Type", data.type);
+  }
 };

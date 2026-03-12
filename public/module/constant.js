@@ -2,6 +2,9 @@ export const colors = {
   red: "#ff8080",
   green: "#98ff80",
   orange: "#ffcb0f",
+  blue: "#89CFF0",
+  sendMessageColor: "#e938cf",
+  reciveMessageColor: "#8e44f0",
 };
 
 export const type = {
@@ -18,6 +21,11 @@ export const type = {
   ROOM_EXIT: {
     EXIT: "EXIT_ROOM_REQUEST",
     NOTIFY: "EXIT_ROOM_NOTIFY",
+  },
+  WEB_RTC: {
+    OFFER: "OFFER",
+    ANSWER: "ANSWER",
+    ICE_CANDIDATE: "ICE_CANDIDATE",
   },
 };
 export const label = {
