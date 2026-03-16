@@ -239,3 +239,4 @@ export const startVideoCall = async () => {
 export const addRemoteVideo = (remoteStream) => {
   remoteVideoElement.srcObject = remoteStream;
 };
+

@@ -211,9 +211,6 @@ export const handleIceCandidates = (data) => {
   else {
     data.iceCandidates.forEach((candidate) => {
       iceCandidatesRecievedBuffer.push(candidate);
-      uiUtiles.LogToCustomConsole(
-        "Ice Candidates are pushed to the temporary buffer",
-      );
     });
   }
 };
