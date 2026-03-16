@@ -10,7 +10,11 @@ export const registerSocketEvents = (wsClientConnection) => {
     //display a message to the custom console display in frontend to the user
     uiUtiles.LogToCustomConsole("You Have connected With Our server ");
     // we can customize our message color or we can control for hightlight the message or not
-
+    setInterval(() => {
+      if (wsClientConnection.readyState === WebSocket.OPEN) {
+        wsClientConnection.send(JSON.stringify({ label: "KEEP_ALIVE" }));
+      }
+    }, 30000);
     wsClientConnection.onmessage = handlemessage;
     wsClientConnection.onclose = handleClose;
     wsClientConnection.onerror = handleError;
@@ -83,12 +87,12 @@ export const sendAnswer = (answer) => {
   state.getState().userWebSocketConnection.send(JSON.stringify(message));
 };
 // outgoing ice candidates
-export const sendIceCandidates = (iceCandidates) => {
+export const sendSingleIceCandidate = (iceCandidate) => {
   const message = {
     label: constants.label.WEBRTC_SERVER_PROCESS,
     data: {
       type: constants.type.WEB_RTC.ICE_CANDIDATE,
-      iceCandidates,
+      iceCandidate,
       otherUserId: state.getState().otherUserId,
     },
   };

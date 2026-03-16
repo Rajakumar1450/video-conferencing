@@ -24,6 +24,11 @@ const localVideoContainer = document.getElementById("local-video-container");
 const localVideoElement = document.getElementById("local-video");
 const remoteVideoContainer = document.getElementById("remote-video-container");
 const remoteVideoElement = document.getElementById("remote-video");
+const typingStatusContainer = document.getElementById("typing-status");
+const typingIndicatorSpan = document.getElementById("typing-indicator");
+const controllButton = document.getElementById("control-buttons");
+const toggleCameraButton = document.getElementById("toggleCamera");
+const toggleAudioButton = document.getElementById("toggleAudioButton");
 // learning purposes
 const offerorButtonsContainer = document.getElementById(
   "offeror_process_buttons",
@@ -83,24 +88,8 @@ export const DOM = {
   exitButton,
   sendMessageButton,
   messageInputField,
-  offeror: {
-    offerorCreatePcButton,
-    offerorAddDataTypeButton,
-    offerorCreateOfferButton,
-    offerorSetLocalDescriptionButton,
-    offerorSendOfferButton,
-    offerorIceButton,
-    offerorSetRemoteDescriptionButton,
-  },
-  offeree: {
-    offereeCreatePcButton,
-    offereeAddDataTypeButton,
-    offereeSetRemoteDescriptionButton,
-    offereeCreateAnswerButton,
-    offereeSetLocalDescriptionButton,
-    offereeSendAnswerButton,
-    offereeIceButton,
-  },
+  toggleCameraButton,
+  toggleAudioButton,
 };
 inputRoomNameElement.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
@@ -135,7 +124,6 @@ export const joineeProceedToRoom = () => {
   roomInterface.classList.remove("hide");
   destroyRoomButton.classList.add("hide");
   roomNameHeadingTag.textContent = `you are in the room : ${state.getState().roomName}  `;
-  messagesContainer.innerHTML = "pls wait ... connecting via WebRTC";
   //show the process button
   // offerorButtonsContainer.classList.remove("hide");
   // offerorButtonsContainer.classList.add("show");
@@ -182,9 +170,15 @@ export const LogToCustomConsole = (
 };
 
 export const updateUiAfterSuccessfulConnection = () => {
+  typingStatusContainer.classList.remove("hide");
+  typingStatusContainer.classList.add("show");
   // show the message input container
   messageInputContainer.classList.remove("hide");
   messageInputContainer.classList.add("show");
+
+  controllButton.classList.remove("hide");
+  controllButton.classList.add("show");
+
   //hide the learning buttons
   // offerorButtonsContainer.classList.remove("show");
   // offerorButtonsContainer.classList.add("hide");
@@ -240,3 +234,63 @@ export const addRemoteVideo = (remoteStream) => {
   remoteVideoElement.srcObject = remoteStream;
 };
 
+export const stopLocalStream = () => {
+  const stream = localVideoElement.srcObject;
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+};
+
+//cheking user is typing or not
+let isTyping = false;
+messageInputField.addEventListener("input", () => {
+  const currentText = messageInputField.value.trim();
+  //if there is some text in the input filed or abhi tak typing false hi hai so bhej do true
+  if (currentText.length > 0 && !isTyping) {
+    webRTCHandler.sendTypingStatus(true);
+    isTyping = true;
+  }
+  //means user pahle type kar rha tha ab nhi kar rha hai message me koii input nhi hai
+  else if (currentText.length === 0 && isTyping) {
+    webRTCHandler.sendTypingStatus(false);
+    isTyping = false;
+  }
+});
+
+export const showTypingIndicator = (isTyping) => {
+  if (isTyping) {
+    typingIndicatorSpan.style.display = "block";
+    typingIndicatorSpan.innerText = "Other peer is typing...";
+  } else {
+    typingIndicatorSpan.style.display = "none";
+  }
+};
+//when a user send the message forcefully send the false for typing status and set the typing status to false
+export const stopTyping = () => {
+  webRTCHandler.sendTypingStatus(false);
+  isTyping = false;
+};
+
+export const toggleCamera = () => {
+  const stream = localVideoElement.srcObject;
+  if (stream) {
+    const videoTrack = stream.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      return videoTrack.enabled;
+    }
+  }
+  return false;
+};
+
+export const toggleAudio = () => {
+  const stream = localVideoElement.srcObject;
+  if (stream) {
+    const audioTrack = stream.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled;
+      return audioTrack.enabled;
+    }
+  }
+  return false;
+};

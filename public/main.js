@@ -61,5 +61,35 @@ uiUtiles.DOM.sendMessageButton.addEventListener("click", () => {
   //now send the message through the data channel that is created between the peers
   webRTCHandler.sendMessageOnDataChannel(message);
   //listen this message on the event on the datachannel when a message event occured on the data channel
+  // Message bhejte waqt:
+
+  uiUtiles.stopTyping(); //jaise hi message send ho usi time uske time indicator ko band kar do
 });
 
+uiUtiles.DOM.toggleCameraButton.addEventListener("click", () => {
+  const isCameraOn = uiUtiles.toggleCamera();
+
+  if (isCameraOn) {
+    uiUtiles.DOM.toggleCameraButton.innerText = "Turn Off Camera";
+  } else {
+    uiUtiles.DOM.toggleCameraButton.innerText = "Turn On Camera";
+  }
+});
+
+uiUtiles.DOM.toggleAudioButton.addEventListener("click", () => {
+  const isAudioOn = uiUtiles.toggleAudio();
+  if (isAudioOn) {
+    uiUtiles.DOM.toggleAudioButton.innerText = "mute";
+  } else {
+    uiUtiles.DOM.toggleAudioButton.innerText = "Unmute";
+  }
+});
+//give warning when user refresh the page
+window.addEventListener("beforeunload", (event) => {
+  //if user in some room then give warning to the user
+  const currentRoom = state.getState().roomName;
+  if (currentRoom) {
+    event.preventDefault();
+    event.returnValue = "";
+  }
+});

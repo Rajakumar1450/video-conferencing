@@ -53,13 +53,21 @@ ol {
   border: 2px solid white;
   max-width: 48%; /* Screen se bahar na jaye */
 }
-#local-video {
-  transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
+.control-button {
+  display: flex;
 }
+#local-video,
 #remote-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ye sabse zaroori hai, ye black space hatayega */
+
+  /* Aapka purana mirror effect */
   transform: scaleX(-1);
   -webkit-transform: scaleX(-1);
+
+  /* (Optional) Agar container me border-radius lagate ho toh video bahar na nikle */
+  border-radius: inherit;
 }
 button {
   padding: 10px;
@@ -262,4 +270,54 @@ button.process_pending {
 
 button.learning-button.process_complete {
   background-color: #45a049;
+}
+
+#control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: -30px;
+  margin-bottom: 20px;
+  padding: 12px 30px;
+  background-color: rgba(40, 40, 40, 0.85);
+  backdrop-filter: blur(5px);
+  border-radius: 50px;
+  width: fit-content;
+  margin-inline: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10;
+}
+#control-buttons.hide {
+  display: none;
+}
+#control-buttons button {
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 30px;
+  background-color: #4a4a4a;
+  color: #ffffff;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+#control-buttons button:hover {
+  background-color: #0991a2;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(9, 145, 162, 0.4);
+}
+
+#control-buttons button.is-off {
+  background-color: #ff3e3e;
+  border: 2px solid #d32f2f;
+}
+
+#control-buttons button.is-off:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 4px 10px rgba(255, 62, 62, 0.4);
 }

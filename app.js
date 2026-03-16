@@ -150,12 +150,15 @@ const handlemessage = (data) => {
     let message = JSON.parse(data);
     switch (message.label) {
       case constantServer.label.NORMAL_SERVER_PROCESS:
-        console.log("=== normal server message ===");
+        // console.log("=== normal server message ===");
         normalServerProcessing(message.data);
         break;
       case constantServer.label.WEBRTC_SERVER_PROCESS:
-        console.log("=== WebRTC server message ===");
+        // console.log("=== WebRTC server message ===");
         webRTCServerProcessing(message.data);
+        break;
+      case "KEEP_ALIVE":
+        // console.log("WebSocket server is alive");
         break;
       default:
         console.log("Unknown message label ", message.label);
@@ -317,7 +320,7 @@ const sendWebSocketMessage = (userId, message) => {
   );
   if (userConnection && userConnection.wsConnection) {
     userConnection.wsConnection.send(JSON.stringify(message));
-    console.log(`message sent to user :${userId}`);
+    // console.log(`message sent to user :${userId}`);
   } else {
     console.log(`user : ${userId} Not found `);
   }

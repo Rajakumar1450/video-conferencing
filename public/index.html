@@ -5,10 +5,11 @@
   </head>
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="data:," />
+
   <body>
     <div id="landing_page_container">
       <div id="header">
-        <h1>Welcome to WebRTC</h1>
+        <h1>Welcome to PeerConnect</h1>
       </div>
       <p>
         Start a private room between you and another peer, where you can
@@ -55,14 +56,25 @@
       </div>
       <div class="video-wrapper">
         <div id="local-video-container" class="video-box">
-          <video id="local-video" autoplay></video>
+          <video id="local-video" autoplay playsinline></video>
         </div>
+
         <div id="remote-video-container" class="video-box">
-          <video id="remote-video" autoplay></video>
+          <video id="remote-video" autoplay playsinline></video>
         </div>
       </div>
+      <!-- control tracks buttons -->
+      <div class="hide" id="control-buttons">
+        <button id="toggleCamera">turn off camera</button>
+        <button id="toggleAudioButton">mute</button>
+      </div>
 
-      <div id="messages">Waiting for a peer to join.</div>
+      <div id="messages"></div>
+
+      <!--  typing indicator  -->
+      <div id="typing-status" class="hide">
+        <span id="typing-indicator"></span>
+      </div>
       <div id="message_input" class="hide">
         <input
           type="text"
