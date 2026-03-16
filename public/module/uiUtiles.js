@@ -29,40 +29,6 @@ const typingIndicatorSpan = document.getElementById("typing-indicator");
 const controllButton = document.getElementById("control-buttons");
 const toggleCameraButton = document.getElementById("toggleCamera");
 const toggleAudioButton = document.getElementById("toggleAudioButton");
-// learning purposes
-const offerorButtonsContainer = document.getElementById(
-  "offeror_process_buttons",
-);
-const offerorCreatePcButton = document.getElementById("create_pc");
-const offerorAddDataTypeButton = document.getElementById("add_data_type");
-const offerorCreateOfferButton = document.getElementById("create_offer");
-const offerorSetLocalDescriptionButton = document.getElementById(
-  "update_local_description",
-);
-const offerorSendOfferButton = document.getElementById("send_offer");
-const offerorSetRemoteDescriptionButton = document.getElementById(
-  "set_remote_description",
-);
-const offerorIceButton = document.getElementById("ice_offeror");
-
-const offereeButtonsContainer = document.getElementById(
-  "offeree_process_buttons",
-);
-const offereeCreatePcButton = document.getElementById("offeree_create_pc");
-const offereeAddDataTypeButton = document.getElementById(
-  "offeree_add_data_type",
-);
-const offereeSetRemoteDescriptionButton = document.getElementById(
-  "offeree_update_remote_description",
-);
-const offereeCreateAnswerButton = document.getElementById(
-  "offeree_create_answer",
-);
-const offereeSetLocalDescriptionButton = document.getElementById(
-  "offeree_update_local_description",
-);
-const offereeSendAnswerButton = document.getElementById("offeree_send_answer");
-const offereeIceButton = document.getElementById("ice_offeree");
 
 export function initializeUser(userId) {
   user_session_id_element.innerHTML = `your session id is : ${userId}`;
@@ -219,7 +185,11 @@ export const startVideoCall = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: true,
+      audio: {
+        echoCancellation: true, //prevent from the sound of speaker going back to mic
+        noiseSuppression: true, //cancel the sounds of the background like fan,ac
+        autoGainControl: true, //automatically adjust the sound
+      },
     });
     localVideoElement.srcObject = stream;
     stream.getTracks().forEach((track) => {
